@@ -2,7 +2,8 @@
 
 namespace App\Jobs;
 
-use App\User;
+
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\SerializesModels;
@@ -33,16 +34,16 @@ class SendEmail implements ShouldQueue
      */
     public function handle()
     {
-        $users = ['jeesann09iub@gmail.com ',' kamal09iub@gmail.com','rahman90@gmail.com'];
+        $users = User::all();
 
         $input['subject'] = $this->mail_data['subject'];
 
         foreach ($users as $key => $value) {
-            // $input['email'] = $value->email;
-            // $input['name'] = $value->name;
+            $input['email'] = $value->email;
+            $input['name'] = $value->name;
             
             Mail::send('mails.mail', [], function($message) use($value,$input){
-                $message->to($value)
+                $message->to($input['email'],$input['name'])
                        ->subject($input['subject']);
             });
         }
